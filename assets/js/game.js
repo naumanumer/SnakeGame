@@ -79,8 +79,8 @@ var Game = {
         game.add.text(30, 20, "SCORE", textStyle_Key);
         scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
         // Speed.
-        game.add.text(500, 20, "SPEED", textStyle_Key);
-        speedTextValue = game.add.text(558, 18, speed.toString(), textStyle_Value);
+        game.add.text(500, 20, "LEVEL", textStyle_Key);
+        speedTextValue = game.add.text(558, 18, level.toString(), textStyle_Value);
 
         // Genereate the first apple.
         this.generateApple();
@@ -104,8 +104,6 @@ var Game = {
         // A formula to calculate game speed based on the score.
         // The higher the score, the higher the game speed, with a maximum of 10;
         speed = Math.min(10, Math.floor(score / 5));
-        // Update speed value on game screen.
-        speedTextValue.text = '' + speed;
 
         // Since the update function of Phaser has an update rate of around 60 FPS,
         // we need to slow that down make the game playable.
