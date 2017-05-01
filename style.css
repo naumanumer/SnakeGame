@@ -1,0 +1,135 @@
+body {
+    padding: 0;
+    margin: 0;
+    -webkit-user-select: none;
+    cursor: default;
+    font-family: "Open sans"
+}
+
+canvas {
+    margin: 0 auto;
+}
+
+.menu {
+    position: absolute;
+    width: 600px;
+    height: 450px;
+    left: calc(50% - 300px);
+    background: #061f27;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 54px;
+    font-family: sans-serif;
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+    top: 201px;
+    left: 10px;
+}
+
+.small-title {
+    font-family: sans-serif;
+    color: #fff;
+    font-weight: 700;
+    position: relative;
+    top: 6px;
+    left: 27px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    color: #44b9fc;
+    font-weight: 700;
+    font-family: sans-serif;
+    font-size: 20px;
+    position: relative;
+    top: 210px;
+    left: 148px;
+}
+
+.small-subtitle {
+    color: #44b9fc;
+    font-weight: 700;
+    font-family: sans-serif;
+    font-size: 20px;
+    position: relative;
+    top: 45px;
+    left: 105px;
+}
+
+.credit {
+    color: #fff;
+    font-weight: 100;
+    font-family: sans-serif;
+    font-size: 11px;
+    position: absolute;
+    bottom: 5px;
+    right: 11px;
+}
+
+.levels {
+    background: rgba(255, 255, 255, .1);
+    width: 560px;
+    height: 344px;
+    position: absolute;
+    top: 79px;
+    left: 20px;
+}
+
+.level-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.level-list>li {
+    float: left;
+    width: 25%;
+    height: 72px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.level-img{
+    position: relative;
+    top: -21px;
+    width: 100%;
+}
+
+.level-num{
+    position: relative;
+    left: 12px;
+    top: 10px;
+    z-index: 1;
+}
+
+.level-list>li:hover{
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.slide-out {
+    animation: slide-out 0.5s forwards;
+    -webkit-animation: slide-out 0.5s forwards;
+}
+
+@keyframes slide-out {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@-webkit-keyframes slide-out {
+    0% {
+        -webkit-transform: translateX(0%);
+    }
+    100% {
+        -webkit-transform: translateX(-100%);
+    }
+}
