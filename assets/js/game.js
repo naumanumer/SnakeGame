@@ -15,6 +15,11 @@ var Game = {
         // setting game background color
         game.stage.backgroundColor = '#061f27';
 
+        //clearing all the variables
+        snake = apple = squareSize = score = speed = walls = wall = isAppleOver =
+            updateDelay = direction = new_direction = addNew= cursors= scoreTextValue=
+            speedTextValue= textStyle_Key= textStyle_Value= LoadingText= undefined;
+
         //displaying loading level.. until all the resources are loaded
         textStyle_Key = { font: "bold 14px sans-serif", fill: "#46c0f9", align: "center" };
         textStyle_Value = { font: "bold 18px sans-serif", fill: "#fff", align: "center" };
@@ -63,7 +68,7 @@ var Game = {
 
         // Generate the initial snake stack. Our snake will be 10 elements long.
         for (var i = 0; i < 10; i++) {
-            snake[i] = game.add.sprite(150 + i * squareSize, 150, 'snake'); // Parameters are (X coordinate, Y coordinate, image)
+            snake[i] = game.add.sprite(165 + i * squareSize, 150, 'snake'); // Parameters are (X coordinate, Y coordinate, image)
             game.physics.arcade.enable(snake[i]);
         }
 
@@ -87,13 +92,17 @@ var Game = {
             swipeCoordY2 = pointer.clientY;
 
             if (swipeCoordX2 < swipeCoordX - swipeMinDistance) {
-                new_direction = "left"
+                if (direction != 'right')
+                    new_direction = "left"
             } else if (swipeCoordX2 > swipeCoordX + swipeMinDistance) {
-                new_direction = "right"
+                if (direction != 'left')
+                    new_direction = "right"
             } else if (swipeCoordY2 < swipeCoordY - swipeMinDistance) {
-                new_direction = "up"
+                if (direction != 'down')
+                    new_direction = "up"
             } else if (swipeCoordY2 > swipeCoordY + swipeMinDistance) {
-                new_direction = "down"
+                if (direction != 'up')
+                    new_direction = "down"
             }
 
         }, this);
