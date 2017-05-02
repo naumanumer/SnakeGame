@@ -2,76 +2,62 @@ var snake, apple, squareSize, score, speed, walls, wall, isAppleOver,
     updateDelay, direction, new_direction,
     addNew, cursors, scoreTextValue, speedTextValue, textStyle_Key, textStyle_Value, LoadingText;
 
-var first = true;
+var swipeCoordX,
+    swipeCoordY,
+    swipeCoordX2,
+    swipeCoordY2,
+    swipeMinDistance = 50;
 
 var Game = {
 
     preload: function() {
 
+        // setting game background color
         game.stage.backgroundColor = '#061f27';
 
+        //displaying loading level.. until all the resources are loaded
         textStyle_Key = { font: "bold 14px sans-serif", fill: "#46c0f9", align: "center" };
         textStyle_Value = { font: "bold 18px sans-serif", fill: "#fff", align: "center" };
-
         LoadingText = game.add.text(220, 230, "Loading Levels ...", textStyle_Value);
 
-        // Here we load all the needed resources for the level.
-        // In our case, that's just two squares - one for the snake body and one for the apple.
+        // loading level resources
         game.load.image('snake', './assets/images/snake.png');
         game.load.image('apple', './assets/images/apple.png');
         game.load.image('tile', './assets/images/tile.png');
+        game.load.tilemap('level', `assets/levels/level${level}.csv`);
 
-        // loading all the levels
-        game.load.tilemap('level1', 'assets/levels/level1.csv');
-        game.load.tilemap('level2', 'assets/levels/level2.csv');
-        game.load.tilemap('level3', 'assets/levels/level3.csv');
-        game.load.tilemap('level4', 'assets/levels/level4.csv');
-        game.load.tilemap('level5', 'assets/levels/level5.csv');
-        game.load.tilemap('level6', 'assets/levels/level6.csv');
-        game.load.tilemap('level7', 'assets/levels/level7.csv');
-        game.load.tilemap('level8', 'assets/levels/level8.csv');
-        game.load.tilemap('level9', 'assets/levels/level9.csv');
-
-        game.load.audio('back', 'assets/sound/2.mp3');
-
+        // initializing game physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
-
-
     },
 
     create: function() {
-
+        // destroy the loading level text
         LoadingText.destroy();
-        // By setting up global variables in the create function, we initialise them on game start.
-        // We need them to be globally available so that the update function can alter them.
 
-        snake = []; // This will work as a stack, containing the parts of our snake
-        apple = {}; // An object for the apple;
-        squareSize = 15; // The length of a side of the squares. Our image is 15x15 pixels.
-        score = 0; // Game score.
-        speed = 0; // Game speed.
-        updateDelay = 0; // A variable for control over update rates.
-        direction = 'right'; // The direction of our snake.
-        new_direction = null; // A buffer to store the new direction into.
+
+        snake = [];
+        apple = {};
+        squareSize = 15;
+        score = 0;
+        speed = 0;
+        updateDelay = 0;
+        direction = 'right';
+        new_direction = null;
         addNew = false; // A variable used when an apple has been eaten.
 
         // Set up a Phaser controller for keyboard input.
         cursors = game.input.keyboard.createCursorKeys();
 
-        game.stage.backgroundColor = '#061f27';
 
-        // loading map
-        map = game.add.tilemap('level' + level, 15, 15);
+        // initializing map
+        map = game.add.tilemap('level', 15, 15);
         map.addTilesetImage('tile');
-
         wall = map.createLayer(0);
         wall.resizeWorld();
 
         walls = game.add.physicsGroup();
 
         map.createFromTiles(0, null, 'tile', wall, walls);
-
-
         map.setCollision(20, true, this.wall);
 
 
@@ -81,25 +67,43 @@ var Game = {
             game.physics.arcade.enable(snake[i]);
         }
 
-
-
-
-        // Add Text to top of game.
-
-
         // Score.
         game.add.text(30, 20, "SCORE", textStyle_Key);
         scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
+
         // Speed.
         game.add.text(500, 20, "LEVEL", textStyle_Key);
         speedTextValue = game.add.text(558, 18, level.toString(), textStyle_Value);
 
-        // Genereate the first apple.
+        // touch support
+
+        game.input.onDown.add(function(pointer) {
+            swipeCoordX = pointer.clientX;
+            swipeCoordY = pointer.clientY;
+        }, this);
+
+        game.input.onUp.add(function(pointer) {
+            swipeCoordX2 = pointer.clientX;
+            swipeCoordY2 = pointer.clientY;
+
+            if (swipeCoordX2 < swipeCoordX - swipeMinDistance) {
+                new_direction = "left"
+            } else if (swipeCoordX2 > swipeCoordX + swipeMinDistance) {
+                new_direction = "right"
+            } else if (swipeCoordY2 < swipeCoordY - swipeMinDistance) {
+                new_direction = "up"
+            } else if (swipeCoordY2 > swipeCoordY + swipeMinDistance) {
+                new_direction = "down"
+            }
+
+        }, this);
+
+        // Generate the first apple.
         this.generateApple();
     },
 
     update: function() {
-
+        // check if snake overlay any of the wall
         game.physics.arcade.overlap(snake[snake.length - 1], walls, this.levelCollision, null, this);
 
         // Handle arrow key presses, while not allowing illegal direction changes that will kill the player.
@@ -113,8 +117,6 @@ var Game = {
             new_direction = 'down';
         }
 
-        // A formula to calculate game speed based on the score.
-        // The higher the score, the higher the game speed, with a maximum of 10;
         speed = Math.min(10, Math.floor(score / 5));
 
         // Since the update function of Phaser has an update rate of around 60 FPS,
@@ -133,7 +135,6 @@ var Game = {
                 oldLastCellx = lastCell.x,
                 oldLastCelly = lastCell.y;
 
-            // If a new direction has been chosen from the keyboard, make it the direction of the snake now.
             if (new_direction) {
                 direction = new_direction;
                 new_direction = null;
@@ -163,7 +164,6 @@ var Game = {
             // End of snake movement.
 
 
-
             // Increase length of snake if an apple had been eaten.
             // Create a block in the back of the snake with the old position of the previous last block (it has moved now along with the rest of the snake).
             if (addNew) {
@@ -185,6 +185,7 @@ var Game = {
     },
 
     levelCollision: function(spriteThatCollided, tileThatCollided) {
+        // end the game
         game.state.start('Game_Over');
     },
 
@@ -200,11 +201,14 @@ var Game = {
             randomY = (Math.floor(Math.random() * 27) + 1) * squareSize;
         // Add a new apple.
         apple = game.add.sprite(randomX, randomY, 'apple');
+
+        //check if apple overlay the walls
         game.physics.arcade.enable(apple);
         game.physics.arcade.overlap(apple, walls, this.reGenerateApple, null, this);
     },
 
     reGenerateApple: function() {
+        // regenerate apple if it overlay the walls
         isAppleOver = true;
         this.generateApple();
     },
