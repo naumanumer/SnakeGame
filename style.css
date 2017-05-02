@@ -111,6 +111,24 @@ canvas {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
+.subtitle{
+    text-transform: uppercase;
+}
+
+.over{
+    height: 100%;
+}
+
+.score{
+    text-transform: uppercase;
+    color: #fff;
+    position: absolute;
+    top: 315px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
 .slide-out {
     animation: slide-out 0.5s forwards;
     -webkit-animation: slide-out 0.5s forwards;

@@ -1,12 +1,20 @@
-var snake, apple, squareSize, score, speed, walls, wall,
+var snake, apple, squareSize, score, speed, walls, wall, isAppleOver,
     updateDelay, direction, new_direction,
-    addNew, cursors, scoreTextValue, speedTextValue, textStyle_Key, textStyle_Value;
+    addNew, cursors, scoreTextValue, speedTextValue, textStyle_Key, textStyle_Value, LoadingText;
 
 var first = true;
 
 var Game = {
 
     preload: function() {
+
+        game.stage.backgroundColor = '#061f27';
+
+        textStyle_Key = { font: "bold 14px sans-serif", fill: "#46c0f9", align: "center" };
+        textStyle_Value = { font: "bold 18px sans-serif", fill: "#fff", align: "center" };
+
+        LoadingText = game.add.text(220, 230, "Loading Levels ...", textStyle_Value);
+
         // Here we load all the needed resources for the level.
         // In our case, that's just two squares - one for the snake body and one for the apple.
         game.load.image('snake', './assets/images/snake.png');
@@ -24,11 +32,16 @@ var Game = {
         game.load.tilemap('level8', 'assets/levels/level8.csv');
         game.load.tilemap('level9', 'assets/levels/level9.csv');
 
+        game.load.audio('back', 'assets/sound/2.mp3');
+
         game.physics.startSystem(Phaser.Physics.ARCADE);
+
+
     },
 
     create: function() {
 
+        LoadingText.destroy();
         // By setting up global variables in the create function, we initialise them on game start.
         // We need them to be globally available so that the update function can alter them.
 
@@ -48,7 +61,7 @@ var Game = {
         game.stage.backgroundColor = '#061f27';
 
         // loading map
-        map = game.add.tilemap('level'+ level, 15, 15);
+        map = game.add.tilemap('level' + level, 15, 15);
         map.addTilesetImage('tile');
 
         wall = map.createLayer(0);
@@ -72,8 +85,7 @@ var Game = {
 
 
         // Add Text to top of game.
-        textStyle_Key = { font: "bold 14px sans-serif", fill: "#46c0f9", align: "center" };
-        textStyle_Value = { font: "bold 18px sans-serif", fill: "#fff", align: "center" };
+
 
         // Score.
         game.add.text(30, 20, "SCORE", textStyle_Key);
@@ -179,17 +191,21 @@ var Game = {
     generateApple: function() {
         // Chose a random place on the grid.
         // X is between 0 and 585 (39*15)
-        // Y is between 0 and 435 (29*15)
-        var randomX = Math.floor(Math.random() * 40) * squareSize,
-            randomY = Math.floor(Math.random() * 30) * squareSize;
+        // Y is between 0 and 435 (29*15);
+        if (isAppleOver) {
+            apple.destroy();
+            isAppleOver = false;
+        }
+        var randomX = (Math.floor(Math.random() * 38) + 1) * squareSize,
+            randomY = (Math.floor(Math.random() * 27) + 1) * squareSize;
         // Add a new apple.
         apple = game.add.sprite(randomX, randomY, 'apple');
         game.physics.arcade.enable(apple);
-        game.physics.arcade.overlap(apple, walls, this.generateApple, null, this);
+        game.physics.arcade.overlap(apple, walls, this.reGenerateApple, null, this);
     },
 
     reGenerateApple: function() {
-        apple.destroy();
+        isAppleOver = true;
         this.generateApple();
     },
 
@@ -225,7 +241,7 @@ var Game = {
 
     wallCollision: function(head) {
         // Check if the head of the snake is in the boundaries of the game field.
-        if (head.x >= 600 || head.x < 0 || head.y >= 450 || head.y < 0) {
+        if (head.x >= 785 || head.x < 15 || head.y >= 435 || head.y < 15) {
             // If it's not in, we've hit a wall. Go to game over screen.
             game.state.start('Game_Over');
         }
