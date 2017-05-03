@@ -10,7 +10,8 @@ Try the game at https://naumanumer.github.io/SnakeGame/index.html
 In order to run it on your machine you may have to follow the following steps:
 
 1. Clone the repo using `git clone https://github.com/naumanumer/SnakeGame.git`
-2. run the server using `node serve.js` (from project root)
+2. Install packages using `npm i`
+3. run the server using `node serve.js` (from project root)
 
 # Dependencies
 There is no project dependencies but there are following dev-dependencies:
