@@ -2,7 +2,7 @@
 It is my own implementation of Snake Game in HTML 5 canvas using Phaserjs.
 
 # Demo
-Try the game at https://naumanumer.github.io/SnakeGame/index.html
+Try the game at https://nmanumr.github.io/SnakeGame/index.html
 
 **Note:** This game is only test and targeted to Chrome v58.
 
